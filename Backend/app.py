@@ -49,7 +49,7 @@ def get_posts():
 
 
 
-@app.route("/profile", methods = ['GET', 'POST'])
+@app.route("/my_profile", methods = ['GET', 'POST'])
 def profile():
     return "<h1> This a demo profile page </h1>"
 
