@@ -5,3 +5,9 @@ routes/__pycache__
 __pycache__
 
 *db
+
+*json
+
+app google.py
+
+api_key.py
