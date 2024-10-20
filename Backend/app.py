@@ -1,47 +1,58 @@
 # app.py
-from flask import Flask, request, redirect, url_for
-from flask_cors import CORS
+from flask import Flask, session,request, redirect, url_for
 from routes.testRoute import test_route  # Import the blueprint
 import interface
 import secrets
 import json
-import os
 
-app = Flask(__name__)
-# app.register_blueprint(test_route)  # Register the blueprint
-
-CORS(app)
-
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = secrets.token_bytes(16) 
 
+@app.route('/profile')
+def profile():
+    user_info = session.get('profile')
+    return f'Hello, {user_info["name"]}!'
 
-@app.route("/", methods = ['GET'])
-@app.route("/home", methods = ['GET'])
-def home():
-    return "<h1> This is a demo home page </h1>"
 
 
-@app.route("/sign_up", methods = ['GET', 'POST'])
-def sign_up():
-        
-    if request.method == "GET":
-        return "<h1> This is a test sign up route </h1>"
-
+@app.route('/api/register', ['POST'])
+def register():
+    user_name = request.form.get('username')
+    display_name = request.form.get('displayname')
+    bio = request.form.get('bio')
+    password = request.form.get('password')
     
-    if request.method == "POST":
-        
-        user_name = request.form.get('username')
-        display_name = request.form.get('displayname')
-        bio = request.form.get('bio')
-        
-        interface.create_profile(user_name, display_name, bio)
-        
-        return redirect(url_for('home'))
-        
+    success = interface.create_profile(user_name, display_name, bio, password)
+    
+    if success == True:
+        return {"message": "Succcessful Registration","userId": "string"}
+    else:
+        return {"message": "Failed Registration","userId": "string"}
+  
+
+
+@app.route('api/login', ['POST'])
+def login():
+    user_name = request.form.get('username')
+    password = request.form.get('password')
+    
+    success = interface.login(user_name, password)
+    
+    if success == True:
+        return {"message": "Succcessful Login","userId": "string"}
+    else:
+        return {"message": "Failed Registration","userId": "string"}
+    
+    
+    
+@app.route('/logout')
+def logout():
+    
+   session.pop('username', None)
+   return redirect(url_for('login'))
+
 
 @app.route("/get_posts", methods = ['GET'])
 def get_posts():
@@ -49,8 +60,8 @@ def get_posts():
 
 
 
-@app.route("/my_profile", methods = ['GET', 'POST'])
-def profile():
+@app.route("/get_profile_details", methods = ['GET'])
+def profile_details():
     return "<h1> This a demo profile page </h1>"
 
 

@@ -59,7 +59,19 @@ def edit_profile(user_name, display_name, bio):
     con.close()
 
 
-def view_profile():
+def get_profile_details(username):
+    pass
+
+
+def get_users_followers(username):
+    pass
+
+
+def get_users_following(username):
+    pass
+
+
+def get_users_posts(username):
     pass
 
 
